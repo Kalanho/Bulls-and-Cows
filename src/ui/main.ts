@@ -1,9 +1,8 @@
-// src/main.ts
-import { generateSecret } from "./core/generateSecret.js";
-import { createState, addAttempt, type GameState } from "./core/state.js";
-import { renderSettings } from "./ui/renderSettings.js";
-import { renderGame } from "./ui/renderGame.js";
-import { renderRecords, addRecord } from "./ui/renderRecords.js";
+import { generateSecret } from "../core/generateSecret.js";
+import { createState, addAttempt, type GameState } from "../core/state.js";
+import { renderSettings } from "./renderSettings.js";
+import { renderGame } from "./renderGame.js";
+import { renderRecords, addRecord } from "./renderRecords.js";
 
 const appContainer = document.body;
 let currentState: GameState | null = null;
