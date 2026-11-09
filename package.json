@@ -15,10 +15,10 @@
   "lint-staged": {
     "*.{ts,js}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --write --allow-empty"
     ],
     "*.{json,md,html,css}": [
-      "prettier --write"
+      "prettier --write --allow-empty"
     ]
   },
   "repository": {
