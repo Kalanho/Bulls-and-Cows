@@ -2,8 +2,7 @@ import { createDigitValidator } from "../core/createDigitValidator.js";
 import { getRecords } from "./renderRecords.js";
 export const renderGame = (container, state, onGuess, 
 // Этот комментарий отключает проверку ESLint для параметра onNewGame
-onNewGame // eslint-disable-line @typescript-eslint/no-unused-vars
-) => {
+onNewGame) => {
     container.replaceChildren();
     const layout = document.createElement("div");
     layout.className = "layout";
@@ -64,7 +63,10 @@ onNewGame // eslint-disable-line @typescript-eslint/no-unused-vars
     historyList.className = "history-list";
     historyList.id = "history-list";
     // === ИСПРАВЛЕНИЕ 1: Переворачиваем историю, чтобы последняя попытка была сверху ===
-    state.history.slice().reverse().forEach((entry) => {
+    state.history
+        .slice()
+        .reverse()
+        .forEach((entry) => {
         const li = document.createElement("li");
         li.className = "history-item";
         if (entry.bulls === state.length)
