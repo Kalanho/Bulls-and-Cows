@@ -109,15 +109,49 @@ export const renderSettings = (container: HTMLElement, onStart: (settings: Setti
   const rulesList = document.createElement("div");
   rulesList.className = "history-list";
 
+  // --- БЫКИ (без innerHTML) ---
   const ruleBulls = document.createElement("div");
   ruleBulls.className = "history-item";
-  ruleBulls.innerHTML =
-    "<span class='score-bulls'>B</span> <span>Бык — цифра угадана и стоит на своём месте.</span>";
+  ruleBulls.style.display = "flex";
+  ruleBulls.style.alignItems = "center";
+  ruleBulls.style.gap = "12px";
 
+  const bBadge = document.createElement("span");
+  bBadge.className = "score-bulls";
+  bBadge.textContent = "B";
+  bBadge.style.fontFamily = "var(--font-main)";
+  bBadge.style.fontSize = "1rem";
+  bBadge.style.fontWeight = "bold";
+
+  const bText = document.createElement("span");
+  bText.textContent = "Бык — цифра угадана и стоит на своём месте.";
+  bText.style.color = "var(--text-muted)";
+  bText.style.fontSize = "0.9rem";
+  bText.style.lineHeight = "1.4";
+
+  ruleBulls.append(bBadge, bText);
+
+  // --- КОРОВЫ (без innerHTML) ---
   const ruleCows = document.createElement("div");
   ruleCows.className = "history-item";
-  ruleCows.innerHTML =
-    "<span class='score-cows'>C</span> <span>Корова — цифра есть в коде, но стоит в другом месте.</span>";
+  ruleCows.style.display = "flex";
+  ruleCows.style.alignItems = "center";
+  ruleCows.style.gap = "12px";
+
+  const cBadge = document.createElement("span");
+  cBadge.className = "score-cows";
+  cBadge.textContent = "C";
+  cBadge.style.fontFamily = "var(--font-main)";
+  cBadge.style.fontSize = "1rem";
+  cBadge.style.fontWeight = "bold";
+
+  const cText = document.createElement("span");
+  cText.textContent = "Корова — цифра есть в коде, но стоит в другом месте.";
+  cText.style.color = "var(--text-muted)";
+  cText.style.fontSize = "0.9rem";
+  cText.style.lineHeight = "1.4";
+
+  ruleCows.append(cBadge, cText);
 
   rulesList.append(ruleBulls, ruleCows);
 
