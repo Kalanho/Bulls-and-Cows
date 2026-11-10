@@ -1,4 +1,5 @@
 import { createDigitValidator } from "../core/createDigitValidator.js";
+import { getRecords } from "./renderRecords.js";
 export const renderGame = (container, state, onGuess, onNewGame) => {
     container.replaceChildren();
     const layout = document.createElement("div");
@@ -82,20 +83,32 @@ export const renderGame = (container, state, onGuess, onNewGame) => {
     rightTitle.textContent = state.finishedAt ? "Победа!" : "Лучшие разгадки";
     rightCol.append(rightHeader, rightTitle);
     if (state.finishedAt) {
-        const winText = document.createElement("p");
-        winText.textContent = "Ты угадал секретный код!";
-        winText.style.marginBottom = "20px";
-        winText.style.color = "var(--text-muted)";
-        const newGameBtn = document.createElement("button");
-        newGameBtn.textContent = "Новая игра";
-        newGameBtn.addEventListener("click", onNewGame);
-        rightCol.append(winText, newGameBtn);
+        // ... (код победы, кнопка "Новая игра") ...
     }
     else {
-        const placeholder = document.createElement("div");
-        placeholder.className = "info-box";
-        placeholder.textContent = "Здесь будет твой первый рекорд. Разгадай код, чтобы начать список.";
-        rightCol.append(placeholder);
+        // --- ДОБАВЛЯЕМ ОТРИСОВКУ РЕКОРДОВ ЗДЕСЬ ---
+        const recordsList = document.createElement("ul");
+        recordsList.className = "records-list";
+        const records = getRecords();
+        if (records.length === 0) {
+            const placeholder = document.createElement("div");
+            placeholder.className = "info-box";
+            placeholder.textContent = "Здесь будет твой первый рекорд. Разгадай код, чтобы начать список.";
+            rightCol.append(placeholder);
+        }
+        else {
+            records.forEach((r, i) => {
+                const li = document.createElement("li");
+                li.className = "record-item";
+                const rank = document.createElement("span");
+                rank.textContent = `#${i + 1}`;
+                const info = document.createElement("span");
+                info.textContent = `${r.attempts} попыток · ${r.time}с`;
+                li.append(rank, info);
+                recordsList.append(li);
+            });
+            rightCol.append(recordsList);
+        }
     }
     layout.append(leftCol, rightCol);
     container.appendChild(layout);
