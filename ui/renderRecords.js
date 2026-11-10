@@ -14,27 +14,3 @@ export const addRecord = (record) => {
     const top10 = records.slice(0, 10);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(top10));
 };
-export const renderRecords = (container) => {
-    const records = getRecords();
-    const list = document.createElement("ul");
-    list.className = "records-list";
-    if (records.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "info-box";
-        empty.textContent = "Пока нет рекордов.";
-        list.append(empty);
-    }
-    else {
-        records.forEach((r, i) => {
-            const li = document.createElement("li");
-            li.className = "record-item";
-            const rank = document.createElement("span");
-            rank.textContent = `#${i + 1}`;
-            const info = document.createElement("span");
-            info.textContent = `${r.attempts} попыток · ${r.time}с`;
-            li.append(rank, info);
-            list.append(li);
-        });
-    }
-    container.append(list);
-};
