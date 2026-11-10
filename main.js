@@ -2,49 +2,79 @@ import { generateSecret } from "./core/generateSecret.js";
 import { createState, addAttempt } from "./core/state.js";
 import { renderSettings } from "./ui/renderSettings.js";
 import { renderGame } from "./ui/renderGame.js";
-import { renderRecords, addRecord } from "./ui/renderRecords.js";
-const appContainer = document.body;
+import { addRecord } from "./ui/renderRecords.js";
+const app = document.getElementById("app");
+if (!app)
+    throw new Error("App container not found");
 let currentState = null;
-// Функция для перерисовки интерфейса на основе текущего стейта
-const render = () => {
-    appContainer.replaceChildren(); // Очищаем весь body
-    if (!currentState) {
-        // Экран настроек
-        renderSettings(appContainer, (settings) => {
-            const secret = generateSecret(settings.length, settings.base);
-            currentState = createState(secret, settings.length, settings.base);
-            render();
-        });
-        // Добавляем таблицу рекордов на экран настроек
-        renderRecords(appContainer);
-    }
-    else {
-        // Экран игры
-        renderGame(appContainer, currentState, 
-        // При новой попытке:
-        (guess) => {
-            if (!currentState)
-                return;
-            const prevHistoryLength = currentState.history.length;
-            currentState = addAttempt(currentState, guess);
-            // Если игра только что закончилась (добавилась запись и есть время финиша)
-            if (currentState.finishedAt !== null && prevHistoryLength !== currentState.history.length) {
-                const timeSec = (currentState.finishedAt - currentState.startedAt) / 1000;
-                addRecord({
-                    length: currentState.length,
-                    base: currentState.base,
-                    attempts: currentState.history.length,
-                    timeSec,
-                });
-            }
-            render();
-        }, 
-        // При нажатии "Новая игра":
-        () => {
-            currentState = null;
-            render();
-        });
+let startTime = 0;
+let timerInterval;
+const renderHeader = () => {
+    const header = document.createElement("header");
+    header.className = "header";
+    const h1 = document.createElement("h1");
+    h1.textContent = "Раскрой секретный код.";
+    const p = document.createElement("p");
+    p.className = "subtitle";
+    p.textContent = "Уникальные цифры. Точные подсказки. Сколько попыток понадобится тебе?";
+    header.append(h1, p);
+    return header;
+};
+const updateTimer = () => {
+    if (!currentState || currentState.finishedAt)
+        return;
+    const timerEl = document.querySelector(".stats-row span:last-child");
+    if (timerEl) {
+        const elapsed = Math.floor((Date.now() - startTime) / 100) / 10;
+        timerEl.textContent = `Время: ${elapsed.toFixed(1)}с`;
     }
 };
-// Запуск приложения
-render();
+const startGame = (settings) => {
+    const secret = generateSecret(settings.length, settings.base);
+    currentState = createState(secret, settings.length, settings.base);
+    startTime = Date.now();
+    if (timerInterval)
+        clearInterval(timerInterval);
+    timerInterval = window.setInterval(updateTimer, 100);
+    drawGameScreen();
+};
+const handleGuess = (guess) => {
+    if (!currentState)
+        return;
+    const errorEl = document.getElementById("error-msg");
+    if (errorEl)
+        errorEl.textContent = "";
+    currentState = addAttempt(currentState, guess);
+    if (currentState.finishedAt) {
+        clearInterval(timerInterval);
+        const timeInSeconds = (currentState.finishedAt - startTime) / 1000;
+        addRecord({
+            attempts: currentState.history.length,
+            time: Math.round(timeInSeconds * 10) / 10,
+            length: currentState.length,
+            base: currentState.base,
+            date: new Date().toISOString(),
+        });
+    }
+    drawGameScreen();
+};
+const drawSettingsScreen = () => {
+    if (timerInterval)
+        clearInterval(timerInterval);
+    app.innerHTML = "";
+    app.append(renderHeader());
+    renderSettings(app, startGame);
+};
+const drawGameScreen = () => {
+    if (!currentState)
+        return;
+    app.innerHTML = "";
+    app.append(renderHeader());
+    renderGame(app, currentState, handleGuess, drawSettingsScreen);
+    const timerEl = document.querySelector(".stats-row span:last-child");
+    if (timerEl && currentState.startedAt) {
+        const elapsed = (Date.now() - currentState.startedAt) / 1000;
+        timerEl.textContent = `Время: ${elapsed.toFixed(1)}с`;
+    }
+};
+drawSettingsScreen();
