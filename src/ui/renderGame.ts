@@ -7,12 +7,12 @@ export const renderGame = (
   onGuess: (guess: string) => void,
   onNewGame: () => void,
 ) => {
-  container.innerHTML = "";
+  container.replaceChildren();
 
   const layout = document.createElement("div");
   layout.className = "layout";
 
-  // --- ЛЕВАЯ ЧАСТЬ (Игра) ---
+  // ЛЕВАЯ КОЛОНКА
   const leftCol = document.createElement("div");
   leftCol.className = "card";
 
@@ -23,7 +23,6 @@ export const renderGame = (
   const title = document.createElement("h2");
   title.textContent = "Собери подсказки";
 
-  // Статистика (попытки и время)
   const stats = document.createElement("div");
   stats.className = "stats-row";
 
@@ -32,11 +31,9 @@ export const renderGame = (
 
   const timer = document.createElement("span");
   timer.textContent = "Время: 00:00.0";
-  // Таймер будет обновляться в main.ts
 
   stats.append(attemptsCount, timer);
 
-  // Форма ввода
   const form = document.createElement("div");
   form.className = "form-row";
 
@@ -48,11 +45,9 @@ export const renderGame = (
   input.placeholder = "····";
   input.maxLength = state.length;
 
-  // Валидация ввода в реальном времени
   const isValidChar = createDigitValidator(state.base);
   input.addEventListener("input", () => {
     const chars = [...input.value].filter(isValidChar);
-    // Удаляем дубликаты
     const unique = [...new Set(chars)];
     input.value = unique.join("").toLowerCase();
   });
@@ -65,8 +60,6 @@ export const renderGame = (
   submitBtn.addEventListener("click", () => {
     if (input.value.length === state.length) {
       onGuess(input.value);
-      input.value = "";
-      submitBtn.disabled = true;
     }
   });
 
@@ -76,19 +69,16 @@ export const renderGame = (
 
   form.append(inputGroup, submitBtn);
 
-  // Подсказка по вводу
   const infoBox = document.createElement("div");
   infoBox.className = "info-box";
   infoBox.textContent = `Длина: ${state.length}. Допустимые символы: ${
     state.base === 16 ? "0-9, A-F" : `0-${state.base - 1}`
   }. Без повторений.`;
 
-  // Ошибка
   const errorMsg = document.createElement("div");
   errorMsg.className = "error-msg";
   errorMsg.id = "error-msg";
 
-  // История попыток
   const historyTitle = document.createElement("h2");
   historyTitle.textContent = "История попыток";
   historyTitle.style.marginTop = "24px";
@@ -97,14 +87,10 @@ export const renderGame = (
   historyList.className = "history-list";
   historyList.id = "history-list";
 
-  // Заполняем историю
   state.history.forEach((entry) => {
     const li = document.createElement("li");
     li.className = "history-item";
-
-    if (entry.bulls === state.length) {
-      li.classList.add("won");
-    }
+    if (entry.bulls === state.length) li.classList.add("won");
 
     const guessSpan = document.createElement("span");
     guessSpan.className = "attempt-guess";
@@ -112,23 +98,15 @@ export const renderGame = (
 
     const scoreSpan = document.createElement("span");
     scoreSpan.className = "attempt-score";
+    scoreSpan.innerHTML = `<span class="score-bulls">B: ${entry.bulls}</span> <span class="score-cows">C: ${entry.cows}</span>`;
 
-    const bullsSpan = document.createElement("span");
-    bullsSpan.className = "score-bulls";
-    bullsSpan.textContent = `B: ${entry.bulls}`;
-
-    const cowsSpan = document.createElement("span");
-    cowsSpan.className = "score-cows";
-    cowsSpan.textContent = `C: ${entry.cows}`;
-
-    scoreSpan.append(bullsSpan, cowsSpan);
     li.append(guessSpan, scoreSpan);
     historyList.append(li);
   });
 
   leftCol.append(header, title, stats, form, infoBox, errorMsg, historyTitle, historyList);
 
-  // --- ПРАВАЯ ЧАСТЬ (Рекорды или Завершение) ---
+  // ПРАВАЯ КОЛОНКА
   const rightCol = document.createElement("div");
   rightCol.className = "card";
 
@@ -145,6 +123,7 @@ export const renderGame = (
     const winText = document.createElement("p");
     winText.textContent = "Ты угадал секретный код!";
     winText.style.marginBottom = "20px";
+    winText.style.color = "var(--text-muted)";
 
     const newGameBtn = document.createElement("button");
     newGameBtn.textContent = "Новая игра";
@@ -159,5 +138,5 @@ export const renderGame = (
   }
 
   layout.append(leftCol, rightCol);
-  container.append(layout);
+  container.appendChild(layout);
 };

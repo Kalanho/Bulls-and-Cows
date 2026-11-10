@@ -8,8 +8,8 @@
   --accent-hover: #ff784e;
   --border: #333333;
   --radius: 4px;
-  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'Courier New', Courier, monospace;
+  --font-main: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "Courier New", Courier, monospace;
 }
 
 * {
@@ -34,7 +34,6 @@ body {
   max-width: 960px;
 }
 
-
 .header {
   margin-bottom: 40px;
   border-bottom: 2px solid var(--border);
@@ -55,7 +54,6 @@ h1 {
   font-size: 1.1rem;
   max-width: 600px;
 }
-
 
 .layout {
   display: grid;
@@ -200,7 +198,6 @@ button:disabled {
   color: #ffeb3b;
 }
 
-
 .records-list {
   list-style: none;
   display: flex;
@@ -216,7 +213,6 @@ button:disabled {
   border-bottom: 1px dashed var(--border);
   font-family: var(--font-mono);
 }
-
 
 .info-box {
   margin-top: 16px;
@@ -235,7 +231,6 @@ button:disabled {
   min-height: 20px;
 }
 
-
 .stats-row {
   display: flex;
   justify-content: space-between;
@@ -244,7 +239,6 @@ button:disabled {
   color: var(--text-muted);
   font-family: var(--font-mono);
 }
-
 
 @keyframes fadeIn {
   from {
