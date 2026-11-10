@@ -1,5 +1,6 @@
 import { GameState } from "../core/state.js";
 import { createDigitValidator } from "../core/createDigitValidator.js";
+import { getRecords } from "./renderRecords.js";
 
 export const renderGame = (
   container: HTMLElement,
@@ -12,7 +13,9 @@ export const renderGame = (
   const layout = document.createElement("div");
   layout.className = "layout";
 
-  // ЛЕВАЯ КОЛОНКА
+  // ==========================================
+  // ЛЕВАЯ КОЛОНКА (Игра)
+  // ==========================================
   const leftCol = document.createElement("div");
   leftCol.className = "card";
 
@@ -106,7 +109,9 @@ export const renderGame = (
 
   leftCol.append(header, title, stats, form, infoBox, errorMsg, historyTitle, historyList);
 
-  // ПРАВАЯ КОЛОНКА
+  // ==========================================
+  // ПРАВАЯ КОЛОНКА (Рекорды или Победа)
+  // ==========================================
   const rightCol = document.createElement("div");
   rightCol.className = "card";
 
@@ -127,14 +132,37 @@ export const renderGame = (
 
     const newGameBtn = document.createElement("button");
     newGameBtn.textContent = "Новая игра";
+    // Вот где используется переменная:
     newGameBtn.addEventListener("click", onNewGame);
 
     rightCol.append(winText, newGameBtn);
   } else {
-    const placeholder = document.createElement("div");
-    placeholder.className = "info-box";
-    placeholder.textContent = "Здесь будет твой первый рекорд. Разгадай код, чтобы начать список.";
-    rightCol.append(placeholder);
+    const recordsList = document.createElement("ul");
+    recordsList.className = "records-list";
+    const records = getRecords();
+
+    if (records.length === 0) {
+      const placeholder = document.createElement("div");
+      placeholder.className = "info-box";
+      placeholder.textContent =
+        "Здесь будет твой первый рекорд. Разгадай код, чтобы начать список.";
+      rightCol.append(placeholder);
+    } else {
+      records.forEach((r, i) => {
+        const li = document.createElement("li");
+        li.className = "record-item";
+
+        const rank = document.createElement("span");
+        rank.textContent = `#${i + 1}`;
+
+        const info = document.createElement("span");
+        info.textContent = `${r.attempts} поп. · ${r.time}с · ${r.length}-${r.base}`;
+
+        li.append(rank, info);
+        recordsList.append(li);
+      });
+      rightCol.append(recordsList);
+    }
   }
 
   layout.append(leftCol, rightCol);

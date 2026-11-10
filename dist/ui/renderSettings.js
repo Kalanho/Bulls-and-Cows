@@ -85,10 +85,12 @@ export const renderSettings = (container, onStart) => {
     rulesList.className = "history-list";
     const ruleBulls = document.createElement("div");
     ruleBulls.className = "history-item";
-    ruleBulls.innerHTML = "<span class='score-bulls'>B</span> <span>Бык — цифра угадана и стоит на своём месте.</span>";
+    ruleBulls.innerHTML =
+        "<span class='score-bulls'>B</span> <span>Бык — цифра угадана и стоит на своём месте.</span>";
     const ruleCows = document.createElement("div");
     ruleCows.className = "history-item";
-    ruleCows.innerHTML = "<span class='score-cows'>C</span> <span>Корова — цифра есть в коде, но стоит в другом месте.</span>";
+    ruleCows.innerHTML =
+        "<span class='score-cows'>C</span> <span>Корова — цифра есть в коде, но стоит в другом месте.</span>";
     rulesList.append(ruleBulls, ruleCows);
     const footerInfo = document.createElement("div");
     footerInfo.className = "info-box";
