@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
 import { createState, addAttempt, isWon } from "../../src/core/state.js";
 
 describe("Game State", () => {
-  // Мокаем Date.now(), чтобы тесты были детерминированными (Repeatable из FIRST)
   beforeAll(() => {
     vi.useFakeTimers();
   });
@@ -33,26 +32,24 @@ describe("Game State", () => {
       const initialState = createState("0123", 4, 10);
       const newState = addAttempt(initialState, "0213");
 
-      // Проверяем, что вернулся НОВЫЙ объект (иммутабельность)
       expect(newState).not.toBe(initialState);
-      // Проверяем, что старый стейт не изменился
+
       expect(initialState.history).toHaveLength(0);
 
-      // Проверяем, что новая история создана через spread, а не push
       expect(newState.history).toEqual([{ guess: "0213", bulls: 2, cows: 2 }]);
     });
 
     it("не добавляет попытку, если она невалидна (неверная длина)", () => {
       const state = createState("0123", 4, 10);
-      const newState = addAttempt(state, "012"); // длина 3, а надо 4
+      const newState = addAttempt(state, "012");
 
-      expect(newState).toBe(state); // Возвращается тот же объект, изменений нет
+      expect(newState).toBe(state);
       expect(newState.history).toHaveLength(0);
     });
 
     it("не добавляет попытку, если есть повторяющиеся цифры", () => {
       const state = createState("0123", 4, 10);
-      const newState = addAttempt(state, "0012"); // повтор нулей
+      const newState = addAttempt(state, "0012");
 
       expect(newState).toBe(state);
     });
@@ -60,21 +57,18 @@ describe("Game State", () => {
     it("защищает от дубликатов попыток (чек-лист)", () => {
       const state = createState("0123", 4, 10);
 
-      // Первая попытка
       const state1 = addAttempt(state, "5678");
 
-      // Вторая попытка — такая же (даже если регистр другой)
       const state2 = addAttempt(state1, "5678");
 
-      expect(state2).toBe(state1); // Возвращается state1 без изменений
-      expect(state2.history).toHaveLength(1); // В истории все еще 1 запись
+      expect(state2).toBe(state1);
+      expect(state2.history).toHaveLength(1);
     });
 
     it("завершает игру при угадывании (all bulls)", () => {
       vi.setSystemTime(new Date("2026-01-01T00:00:00Z"));
       const state = createState("0123", 4, 10);
 
-      // Игрок угадал, но время прошло
       vi.setSystemTime(new Date("2026-01-01T00:00:05Z"));
       const newState = addAttempt(state, "0123");
 
