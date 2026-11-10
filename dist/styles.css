@@ -17,9 +17,9 @@
 }
 
 body {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   background-color: var(--bg-color);
-  background-image: 
+  background-image:
     radial-gradient(circle at 15% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
     radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
   color: var(--text-main);
@@ -81,7 +81,7 @@ h2 {
 }
 
 .panel::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -106,7 +106,8 @@ label {
   color: var(--text-muted);
 }
 
-select, input {
+select,
+input {
   width: 100%;
   padding: 12px 15px;
   background: rgba(0, 0, 0, 0.2);
@@ -119,12 +120,14 @@ select, input {
   transition: all 0.2s ease;
 }
 
-select:focus, input:focus {
+select:focus,
+input:focus {
   border-color: var(--accent-neon);
   box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
 }
 
-select:disabled, input:disabled {
+select:disabled,
+input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -252,6 +255,12 @@ button:disabled {
 
 /* --- АНИМАЦИИ --- */
 @keyframes slideIn {
-  from { opacity: 0; transform: translateX(-10px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
