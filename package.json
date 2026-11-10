@@ -9,7 +9,7 @@
     "format": "prettier --write .",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
-    "build": "tsc && cp index.html dist/",
+    "build": "tsc && cp index.html dist/ && cp styles.css dist/",
     "prepare": "husky"
   },
   "lint-staged": {
