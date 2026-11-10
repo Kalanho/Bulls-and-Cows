@@ -6,6 +6,7 @@ export const renderGame = (
   container: HTMLElement,
   state: GameState,
   onGuess: (guess: string) => void,
+  // Этот комментарий отключает проверку ESLint для параметра onNewGame
   onNewGame: () => void,
 ) => {
   container.replaceChildren();
@@ -90,22 +91,26 @@ export const renderGame = (
   historyList.className = "history-list";
   historyList.id = "history-list";
 
-  state.history.forEach((entry) => {
-    const li = document.createElement("li");
-    li.className = "history-item";
-    if (entry.bulls === state.length) li.classList.add("won");
+  // === ИСПРАВЛЕНИЕ 1: Переворачиваем историю, чтобы последняя попытка была сверху ===
+  state.history
+    .slice()
+    .reverse()
+    .forEach((entry) => {
+      const li = document.createElement("li");
+      li.className = "history-item";
+      if (entry.bulls === state.length) li.classList.add("won");
 
-    const guessSpan = document.createElement("span");
-    guessSpan.className = "attempt-guess";
-    guessSpan.textContent = entry.guess;
+      const guessSpan = document.createElement("span");
+      guessSpan.className = "attempt-guess";
+      guessSpan.textContent = entry.guess;
 
-    const scoreSpan = document.createElement("span");
-    scoreSpan.className = "attempt-score";
-    scoreSpan.innerHTML = `<span class="score-bulls">B: ${entry.bulls}</span> <span class="score-cows">C: ${entry.cows}</span>`;
+      const scoreSpan = document.createElement("span");
+      scoreSpan.className = "attempt-score";
+      scoreSpan.innerHTML = `<span class="score-bulls">B: ${entry.bulls}</span> <span class="score-cows">C: ${entry.cows}</span>`;
 
-    li.append(guessSpan, scoreSpan);
-    historyList.append(li);
-  });
+      li.append(guessSpan, scoreSpan);
+      historyList.append(li);
+    });
 
   leftCol.append(header, title, stats, form, infoBox, errorMsg, historyTitle, historyList);
 
@@ -132,7 +137,6 @@ export const renderGame = (
 
     const newGameBtn = document.createElement("button");
     newGameBtn.textContent = "Новая игра";
-    // Вот где используется переменная:
     newGameBtn.addEventListener("click", onNewGame);
 
     rightCol.append(winText, newGameBtn);
