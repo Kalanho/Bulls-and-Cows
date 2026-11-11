@@ -6,7 +6,6 @@ export const renderGame = (
   container: HTMLElement,
   state: GameState,
   onGuess: (guess: string) => void,
-  // Этот комментарий отключает проверку ESLint для параметра onNewGame
   onNewGame: () => void,
 ) => {
   container.replaceChildren();
@@ -14,9 +13,6 @@ export const renderGame = (
   const layout = document.createElement("div");
   layout.className = "layout";
 
-  // ==========================================
-  // ЛЕВАЯ КОЛОНКА (Игра)
-  // ==========================================
   const leftCol = document.createElement("div");
   leftCol.className = "card";
 
@@ -91,7 +87,6 @@ export const renderGame = (
   historyList.className = "history-list";
   historyList.id = "history-list";
 
-  // === ИСПРАВЛЕНИЕ 1: Переворачиваем историю, чтобы последняя попытка была сверху ===
   state.history
     .slice()
     .reverse()
@@ -114,11 +109,13 @@ export const renderGame = (
 
   leftCol.append(header, title, stats, form, infoBox, errorMsg, historyTitle, historyList);
 
-  // ==========================================
-  // ПРАВАЯ КОЛОНКА (Рекорды или Победа)
-  // ==========================================
   const rightCol = document.createElement("div");
   rightCol.className = "card";
+  rightCol.style.display = "flex";
+  rightCol.style.flexDirection = "column";
+  rightCol.style.justifyContent = "space-between";
+
+  const rightContent = document.createElement("div");
 
   const rightHeader = document.createElement("div");
   rightHeader.className = "card-header";
@@ -127,19 +124,14 @@ export const renderGame = (
   const rightTitle = document.createElement("h2");
   rightTitle.textContent = state.finishedAt ? "Победа!" : "Лучшие разгадки";
 
-  rightCol.append(rightHeader, rightTitle);
+  rightContent.append(rightHeader, rightTitle);
 
   if (state.finishedAt) {
     const winText = document.createElement("p");
     winText.textContent = "Ты угадал секретный код!";
     winText.style.marginBottom = "20px";
     winText.style.color = "var(--text-muted)";
-
-    const newGameBtn = document.createElement("button");
-    newGameBtn.textContent = "Новая игра";
-    newGameBtn.addEventListener("click", onNewGame);
-
-    rightCol.append(winText, newGameBtn);
+    rightContent.append(winText);
   } else {
     const recordsList = document.createElement("ul");
     recordsList.className = "records-list";
@@ -150,7 +142,7 @@ export const renderGame = (
       placeholder.className = "info-box";
       placeholder.textContent =
         "Здесь будет твой первый рекорд. Разгадай код, чтобы начать список.";
-      rightCol.append(placeholder);
+      rightContent.append(placeholder);
     } else {
       records.forEach((r, i) => {
         const li = document.createElement("li");
@@ -165,10 +157,28 @@ export const renderGame = (
         li.append(rank, info);
         recordsList.append(li);
       });
-      rightCol.append(recordsList);
+      rightContent.append(recordsList);
     }
   }
 
+  const newGameBtn = document.createElement("button");
+  newGameBtn.textContent = "Новая игра";
+  newGameBtn.style.marginTop = "24px";
+
+  newGameBtn.addEventListener("click", () => {
+    if (!state.finishedAt) {
+      const confirmRestart = window.confirm(
+        "Вы уверены, что хотите начать новую игру? Текущий прогресс будет потерян.",
+      );
+      if (confirmRestart) {
+        onNewGame();
+      }
+    } else {
+      onNewGame();
+    }
+  });
+
+  rightCol.append(rightContent, newGameBtn);
   layout.append(leftCol, rightCol);
   container.appendChild(layout);
 };
